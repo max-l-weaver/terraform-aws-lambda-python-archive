@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tempfile
 import zipfile
+import ntpath
 
 def build(src_dir, output_path):
     with tempfile.TemporaryDirectory() as build_dir:
@@ -33,6 +34,9 @@ def build(src_dir, output_path):
 
 
 def make_archive(src_dir, output_path):
+    output_path_filename = ntpath.basename(output_path)
+    logging.debug("exluding file {} from archive".format(output_path_filename))
+
     try:
         os.makedirs(os.path.dirname(output_path))
     except OSError as e:
@@ -45,6 +49,8 @@ def make_archive(src_dir, output_path):
         for root, dirs, files in os.walk(src_dir):
             for file in files:
                 if file.endswith('.pyc'):
+                    break
+                elif os.path.exists(output_path) and file in [output_path_filename]:
                     break
                 metadata = zipfile.ZipInfo(
                     os.path.join(root, file).replace(src_dir, '').lstrip(os.sep)
@@ -72,4 +78,4 @@ if __name__ == '__main__':
     query = json.loads(sys.stdin.read())
     logging.debug(query)
     archive = build(query['src_dir'], query['output_path'])
-    print(json.dumps({'archive': archive, "base64sha256":get_hash(archive)}))
+    json.dump({'archive': archive, "base64sha256":get_hash(archive)}, sys.stdout)
