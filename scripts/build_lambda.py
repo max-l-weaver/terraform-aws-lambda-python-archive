@@ -27,7 +27,7 @@ def build(src_dir, output_path):
                  '--target', build_dir,
                  '-r', os.path.join(build_dir, 'requirements.txt')],
                  check=True,
-                 stdout=subprocess.DEVNULL,
+                 stdout=subprocess.STDOUT,
             )
         make_archive(build_dir, output_path)
         return output_path
