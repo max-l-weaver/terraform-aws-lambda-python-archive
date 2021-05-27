@@ -77,7 +77,7 @@ def get_hash(output_path):
 
 if __name__ == '__main__':
     logging.basicConfig(level='DEBUG')
-    #query = json.loads(sys.stdin.read())
-    #logging.debug(query)
-    archive = build('/Users/mweaver/Ito/itoworld-product/cluster/terraform/files/lambda_functions/generic_slack_notify', '/Users/mweaver/Ito/itoworld-product/cluster/terraform/files/lambda_functions/generic_slack_notify/.archive', False)
-    print(json.dumps({'archive': archive, 'base64sha256':get_hash(archive)}))
+    query = json.loads(sys.stdin.read())
+    logging.debug(query)
+    archive = build(query['src_dir'], query['output_path'], query['install_dependencies'])
+    print(json.dumps({'archive': archive, 'base64sha256': get_hash(archive)}))
