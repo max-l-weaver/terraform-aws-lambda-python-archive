@@ -17,7 +17,6 @@ import ntpath
 def build(src_dir, output_path, install_dependencies):
 
     with tempfile.TemporaryDirectory() as build_dir:
-        print(build_dir)
         copy_tree(src_dir, build_dir)
         if os.path.exists(os.path.join(src_dir, 'requirements.txt')):
             subprocess.run(
