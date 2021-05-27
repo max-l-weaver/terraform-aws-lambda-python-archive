@@ -12,9 +12,12 @@ import subprocess
 import sys
 import tempfile
 import zipfile
+import ntpath
 
 def build(src_dir, output_path, install_dependencies):
+
     with tempfile.TemporaryDirectory() as build_dir:
+        print(build_dir)
         copy_tree(src_dir, build_dir)
         if os.path.exists(os.path.join(src_dir, 'requirements.txt')):
             subprocess.run(
@@ -34,6 +37,8 @@ def build(src_dir, output_path, install_dependencies):
 
 
 def make_archive(src_dir, output_path):
+    output_path_filename = ntpath.basename(output_path)
+
     try:
         os.makedirs(os.path.dirname(output_path))
     except OSError as e:
@@ -46,6 +51,8 @@ def make_archive(src_dir, output_path):
         for root, dirs, files in os.walk(src_dir):
             for file in files:
                 if file.endswith('.pyc'):
+                    break
+                elif file in [output_path_filename]:
                     break
                 metadata = zipfile.ZipInfo(
                     os.path.join(root, file).replace(src_dir, '').lstrip(os.sep)
@@ -70,7 +77,7 @@ def get_hash(output_path):
 
 if __name__ == '__main__':
     logging.basicConfig(level='DEBUG')
-    query = json.loads(sys.stdin.read())
-    logging.debug(query)
-    archive = build(query['src_dir'], query['output_path'], query['install_dependencies'])
+    #query = json.loads(sys.stdin.read())
+    #logging.debug(query)
+    archive = build('/Users/mweaver/Ito/itoworld-product/cluster/terraform/files/lambda_functions/generic_slack_notify', '/Users/mweaver/Ito/itoworld-product/cluster/terraform/files/lambda_functions/generic_slack_notify/.archive', False)
     print(json.dumps({'archive': archive, 'base64sha256':get_hash(archive)}))
