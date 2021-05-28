@@ -26,8 +26,7 @@ def build(src_dir, output_path):
                  '--ignore-installed',
                  '--target', build_dir,
                  '-r', os.path.join(build_dir, 'requirements.txt')],
-                 check=True,
-                 stdout=subprocess.STDOUT,
+                 check=True)
             )
         make_archive(build_dir, output_path)
         return output_path
